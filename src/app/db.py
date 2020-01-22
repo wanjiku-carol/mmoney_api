@@ -3,6 +3,7 @@ import os
 from databases import Database
 from sqlalchemy import (
     create_engine, MetaData, Column, DateTime, Integer, String, Table,
+    ForeignKey
     )
 from sqlalchemy.sql import func
 
@@ -45,6 +46,16 @@ country = Table(
   Column("name", String(50)),
   Column("created_date", DateTime, default=func.now(), nullable=False),
 )
+transaction = Table(
+  "transaction",
+  metadata,
+  Column('id', Integer, primary_key=True),
+  Column('u_id', Integer, ForeignKey("user.id")),
+  Column('r_id', Integer, ForeignKey("recipient.id")),
+  Column('amount', Integer),
+  Column('status', String(50)),
+  Column('created_at', DateTime, default=func.now(), nullable=False),
+  )
 
 # new database instance. Databases is an async SQL query builder that
 # works on top of the SQLAlchemy Core expression language
