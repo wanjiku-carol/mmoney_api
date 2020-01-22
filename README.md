@@ -94,3 +94,9 @@ To connect to the database:
 To view the tables created:
 
 > mmoney_api_dev=# \dt
+
+## Run Tests
+
+To run tests:
+
+> docker-compose exec web pytest .
