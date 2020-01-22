@@ -1,5 +1,5 @@
 from . import router
 
 @router.get("/ping")
-def pong():
+async def pong():
   return {"ping": "pong"}
