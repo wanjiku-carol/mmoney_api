@@ -78,3 +78,19 @@ Pydantic
 
 - forgot_password: POST
 
+
+## Postgres SetUp
+To view psql, run:
+
+> docker-compose exec db psql --username=mmoney_api --dbname=mmoney_api_dev
+
+To view the list of databases:
+
+> mmoney_api_dev=# \l
+
+To connect to the database:
+> mmoney_api_dev=# \c
+
+To view the tables created:
+
+> mmoney_api_dev=# \dt
