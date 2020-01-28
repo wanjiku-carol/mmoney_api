@@ -40,3 +40,29 @@ async def create_country(payload: CountrySchema):
     "name": payload.name,
     }
   return response_object
+
+async def put(id: int, payload: CountrySchema):
+  query = (
+    country
+    .update()
+    .where(id == country.c.id)
+    .values(name=payload.name)
+    .returning(country.c.id)
+  )
+  return await database.execute(query=query)
+
+# put request
+@router.put("/countries/{id}", response_model=CountryDB)
+async def update_country(id: int, payload: CountrySchema):
+  country = await get(id)
+
+  if not country:
+    raise HTTPException(status_code=404, detail="Country Not Found")
+  
+  country_id = await put(id, payload)
+
+  response_object = {
+    "id": country_id,
+    "name": payload.name
+  }
+  return response_object

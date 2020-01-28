@@ -55,3 +55,33 @@ def test_get_all_countries(test_app, monkeypatch):
   response = test_app.get("/countries")
   assert response.status_code == 200
   assert response.json() == test_all_countries
+
+def test_update_country(test_app, monkeypatch):
+  test_update_data = {"id": 1, "name": "Ethiopia"}
+  async def mock_get(id):
+    return True
+  monkeypatch.setattr(countries, "get", mock_get)
+  
+  async def mock_update(id, payload):
+    return 1
+  monkeypatch.setattr(countries, "put", mock_update)
+  response = test_app.put("/countries/1", data=json.dumps(test_update_data))
+  assert response.status_code == 200
+  assert response.json() == test_update_data
+
+@pytest.mark.parametrize(
+  "id, payload, status_code",
+  [
+    [1, {}, 422],
+    [1, {"description": "something"}, 422],
+    [999, {"name": "country that doesn't exist"}, 404]
+  ]
+)
+def test_invalid_country_update(test_app, monkeypatch, id, payload, status_code):
+  async def mock_get(id):
+    return None
+  
+  monkeypatch.setattr(countries, "get", mock_get)
+
+  response = test_app.put(f"countries/{id}", data=json.dumps(payload))
+  assert response.status_code == status_code
