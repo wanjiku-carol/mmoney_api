@@ -85,3 +85,30 @@ def test_invalid_country_update(test_app, monkeypatch, id, payload, status_code)
 
   response = test_app.put(f"countries/{id}", data=json.dumps(payload))
   assert response.status_code == status_code
+
+def test_delete_country(test_app, monkeypatch):
+  test_data = {"id": 1, "name": "Yugoslavia"}
+
+  async def mock_get(id):
+    return test_data
+  
+  monkeypatch.setattr(countries, "get", mock_get)
+
+  async def mock_delete(id):
+    return id
+  
+  monkeypatch.setattr(countries, "delete", mock_delete)
+
+  response = test_app.delete("/countries/1")
+  assert response.status_code == 200
+  assert response.json() == test_data
+
+def test_delete_invalid_country(test_app, monkeypatch):
+  async def mock_get(id):
+    return None
+
+  monkeypatch.setattr(countries, "get", mock_get)
+
+  response = test_app.delete("/countries/999")
+  assert response.status_code == 404
+  assert response.json()["detail"] == "Country Not Found" 

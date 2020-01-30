@@ -7,7 +7,7 @@ from typing import List
 
 # get all countries
 async def get_all():
-  query = country.select().order_by(country.c.id)
+  query = country.select().order_by(country.c.name)
   return await database.fetch_all(query=query)
 
 @router.get("/countries", response_model=List[CountryDB])
@@ -66,3 +66,23 @@ async def update_country(id: int, payload: CountrySchema):
     "name": payload.name
   }
   return response_object
+
+async def delete(id: int):
+  query = (
+    country
+    .delete()
+    .where(id == country.c.id)
+  )
+  return await database.execute(query=query)
+
+# delete country
+@router.delete("/countries/{id}", response_model=CountryDB)
+async def delete_country(id: int):
+  country = await get(id)
+
+  if not country:
+    raise HTTPException(status_code=404, detail="Country Not Found")
+
+  await delete(id)
+
+  return country
