@@ -20,6 +20,9 @@ def test_create_invalid_country(test_app):
   response = test_app.post("/countries", data=json.dumps({"title": "something"}))
   assert response.status_code == 422
 
+  response = test_app.post("/countries", data=json.dumps({"name": ""}))
+  assert response.status_code == 422
+
   response = test_app.post("/countries", data=json.dumps({
   "name": "Al Jumahiriyah al Arabiyah al Libiyah ash Shabiyah al Ishtirakiyah al Uzma Oga"
   }))
@@ -84,6 +87,7 @@ def test_update_country(test_app, monkeypatch):
     [1, {"description": "something"}, 422],
     [1, {"name": "a"}, 422],
     [0, {"name": "Ethiopia"}, 422],
+    [1, {"name": ""}, 422],
     [999, {"name": "country that doesn't exist"}, 404]
   ]
 )

@@ -62,7 +62,7 @@ Pydantic
 
 - /transactions: GET
 
-- countries: GET
+- countries: GET, POST, PUT, DELETE
 
 - /send: POST
 
