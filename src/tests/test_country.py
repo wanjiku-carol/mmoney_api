@@ -20,6 +20,11 @@ def test_create_invalid_country(test_app):
   response = test_app.post("/countries", data=json.dumps({"title": "something"}))
   assert response.status_code == 422
 
+  response = test_app.post("/countries", data=json.dumps({
+  "name": "Al Jumahiriyah al Arabiyah al Libiyah ash Shabiyah al Ishtirakiyah al Uzma Oga"
+  }))
+  assert response.status_code == 422
+
 def test_get_country(test_app, monkeypatch):
   test_data = {"id": 2, "name": "Russia"}
 
@@ -41,6 +46,9 @@ def test_non_existent_country(test_app, monkeypatch):
   response = test_app.get("/countries/12")
   assert response.status_code == 404
   assert response.json()["detail"] == "Country Not Found"
+
+  response = test_app.get("/countries/0")
+  assert response.status_code == 422
 
 def test_get_all_countries(test_app, monkeypatch):
   test_all_countries = [
@@ -74,6 +82,8 @@ def test_update_country(test_app, monkeypatch):
   [
     [1, {}, 422],
     [1, {"description": "something"}, 422],
+    [1, {"name": "a"}, 422],
+    [0, {"name": "Ethiopia"}, 422],
     [999, {"name": "country that doesn't exist"}, 404]
   ]
 )
@@ -108,6 +118,9 @@ def test_delete_invalid_country(test_app, monkeypatch):
     return None
 
   monkeypatch.setattr(countries, "get", mock_get)
+
+  response = test_app.delete("/countries/0")
+  assert response.status_code == 422
 
   response = test_app.delete("/countries/999")
   assert response.status_code == 404

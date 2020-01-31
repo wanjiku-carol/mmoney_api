@@ -2,7 +2,7 @@ from . import router
 from app.models.country import CountrySchema, CountryDB
 from app.db import country, database
 from sqlalchemy import select
-from fastapi import HTTPException
+from fastapi import HTTPException, Path
 from typing import List
 
 # get all countries
@@ -20,7 +20,7 @@ async def get(id: int):
   return await database.fetch_one(query=query)
 
 @router.get("/countries/{id}", response_model=CountryDB, status_code=200)
-async def get_country(id: int):
+async def get_country(id: int = Path(..., gt=0),):
   country = await get(id)
   if not country:
     raise HTTPException(status_code=404, detail="Country Not Found")
@@ -53,7 +53,7 @@ async def put(id: int, payload: CountrySchema):
 
 # put request
 @router.put("/countries/{id}", response_model=CountryDB)
-async def update_country(id: int, payload: CountrySchema):
+async def update_country(payload: CountrySchema, id: int = Path(..., gt=0),):
   country = await get(id)
 
   if not country:
@@ -77,7 +77,7 @@ async def delete(id: int):
 
 # delete country
 @router.delete("/countries/{id}", response_model=CountryDB)
-async def delete_country(id: int):
+async def delete_country(id: int = Path(..., gt=0),):
   country = await get(id)
 
   if not country:
