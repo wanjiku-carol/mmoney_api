@@ -1,14 +1,16 @@
-from pyndatic import BaseModel
+from pydantic import BaseModel, EmailStr
+from datetime import datetime
 
-class User(BaseModel):
-
-  id: int
+class UserSchema(BaseModel):
   name: str
-  email: str
-  dob: dateime = None
+  email: EmailStr
+  dob: str = None
   password: str
   pin: str
   money_type: str
-  mobile : int
-  bank_code: int
-  created_at: dateime = None
+  mobile : str
+  bank_code: str = None
+
+class UserDB(UserSchema):
+  id: int
+  
