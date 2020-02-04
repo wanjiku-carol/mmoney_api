@@ -1,9 +1,9 @@
 from datetime import datetime
-from fastapi import Body
+from fastapi import HTTPException
 from . import router
 from app.models.user import UserSchema, UserDB
 from app.db import user, database
-
+from typing import List
 
 @router.get("/users")
 async def get_users():
@@ -32,3 +32,16 @@ async def create_user(payload: UserSchema):
     "success": "Account Successfully Created",
     }
   return response_object
+
+async def get(id: int):
+  query = user.select().where(id == user.c.id)
+  return await database.fetch_one(query=query)
+
+@router.get("/users/{id}", response_model=UserDB, status_code=200)
+async def get_user(id: int):
+  user = await get(id)
+
+  if not user:
+    raise HTTPException(status_code=404, detail="User Not Found")
+  return user
+
