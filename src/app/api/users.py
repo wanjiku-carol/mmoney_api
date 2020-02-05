@@ -5,12 +5,6 @@ from app.models.user import UserSchema, UserDB
 from app.db import user, database
 from typing import List
 
-@router.get("/users")
-async def get_users():
-  # we'll create this function later
-  # users = await get_all_users()
-  return {"Users": "List of users"}
-
 async def post(payload: UserSchema):
   query = user.insert().values(
     name=payload.name,
@@ -45,3 +39,13 @@ async def get_user(id: int):
     raise HTTPException(status_code=404, detail="User Not Found")
   return user
 
+async def get_all():
+  query = user.select().order_by(user.c.name)
+  return await database.fetch_all(query=query)
+
+@router.get("/users", response_model=List[UserDB], status_code=200)
+async def get_users():
+  countries = await get_all()
+  if not countries:
+    raise HTTPException(status_code=404, detail="No Users Found")
+  return countries

@@ -4,18 +4,49 @@ import pytest
 from app.api import users
 
 def test_get_users(test_app, monkeypatch):
-  pass
-  # test_user_data = [{
-    # "name": "",
-    # "email": "",
-    # "dob": "",
-    # "mobile"; "",
-    # "bank_code": "",
-    # "created_at": ""
-  # }]
+  test_data = [
+    {
+    "id": 1,
+    "name": "Jane Wanjiku",
+    "email": "jane@emailt.com",
+    "dob": "08-11-2017",
+    "password": "password",
+    "pin": "1234",
+    "money_type": "mobile",
+    "mobile": "0703123456",
+    "bank_code": "097-123456",
+  },
+  {
+    "id": 2,
+    "name": "Stephen Odom",
+    "email": "steve@emailt.com",
+    "dob": "08-11-2017",
+    "password": "password",
+    "pin": "1234",
+    "money_type": "mobile",
+    "mobile": "0766123456",
+    "bank_code": "097-12345690",
+  }
+  ]
+
+  async def mock_get_all():
+    return test_data
+  
+  monkeypatch.setattr(users, "get_all", mock_get_all)
+
+  response = test_app.get("/users")
+  assert response.status_code == 200
+  assert response.json() == test_data
 
 def test_invalid_get_users(test_app, monkeypatch):
-  pass
+  async def mock_get_all():
+    return None
+
+  monkeypatch.setattr(users, "get_all", mock_get_all)
+
+  response = test_app.get("/users")
+  assert response.status_code == 404
+  assert response.json()["detail"] == "No Users Found"
 
 def test_get_user(test_app, monkeypatch):
   test_user = {
