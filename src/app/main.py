@@ -20,7 +20,7 @@ async def shutdown():
 
 app.include_router(ping.router)
 app.include_router(send.router)
-app.include_router(countries.router, prefix='/countries', tags=['countries'])
+app.include_router(countries.router)
 app.include_router(forgot_password.router)
 app.include_router(login.router)
 app.include_router(verify_email.router)

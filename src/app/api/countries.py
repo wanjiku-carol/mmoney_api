@@ -31,7 +31,6 @@ async def post(payload: CountrySchema):
   query = country.insert().values(name=payload.name)
   return await database.execute(query=query)
 
-
 @router.post("/countries", response_model=CountryDB, status_code=201)
 async def create_country(payload: CountrySchema):
   country_id = await post(payload)
@@ -84,5 +83,4 @@ async def delete_country(id: int = Path(..., gt=0),):
     raise HTTPException(status_code=404, detail="Country Not Found")
 
   await delete(id)
-
   return country

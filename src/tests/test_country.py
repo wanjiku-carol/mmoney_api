@@ -17,16 +17,16 @@ def test_create_country(test_app, monkeypatch):
   assert response.json() == test_resp
 
 def test_create_invalid_country(test_app):
-  response = test_app.post("/countries", data=json.dumps({"title": "something"}))
-  assert response.status_code == 422
+  response1 = test_app.post("/countries", data=json.dumps({"title": "something"}))
+  assert response1.status_code == 422
 
-  response = test_app.post("/countries", data=json.dumps({"name": ""}))
-  assert response.status_code == 422
+  response2 = test_app.post("/countries", data=json.dumps({"name": ""}))
+  assert response2.status_code == 422
 
-  response = test_app.post("/countries", data=json.dumps({
+  response3 = test_app.post("/countries", data=json.dumps({
   "name": "Al Jumahiriyah al Arabiyah al Libiyah ash Shabiyah al Ishtirakiyah al Uzma Oga"
   }))
-  assert response.status_code == 422
+  assert response3.status_code == 422
 
 def test_get_country(test_app, monkeypatch):
   test_data = {"id": 2, "name": "Russia"}
