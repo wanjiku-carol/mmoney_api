@@ -91,7 +91,13 @@ def test_create_users(test_app, monkeypatch):
     "bank_code": "097-123456"
   }
   test_user_response = {
-    "success": "Account Successfully Created",
+    "id": 1,
+    "name": "Jane Wanjiku",
+    "email": "jane@emailt.com",
+    "dob": "08-11-2017",
+    "money_type": "mobile",
+    "mobile": "0703123456",
+    "bank_code": "097-123456"
   }
 
   async def mock_post(payload):
@@ -123,9 +129,31 @@ def test_invalid_create_users(test_app):
 
 
 def test_update_user(test_app, monkeypatch):
-  pass
+  test_update_data = {
+    "name": "Janita Wanjala",
+    "bank_code": "097-456456"
+  }
+  test_response_data = {
+    "id": 1,
+    "name": "Janita Wanjala",
+    "bank_code": "097-456456"
+  }
+  
+  async def mock_get(id):
+    return True
 
-def test_invalid_update_user(test_app, monkeypatch):
+  monkeypatch.setattr(users, "get", mock_get)
+
+  async def mock_update(id, payload):
+    return 1
+
+  monkeypatch.setattr(users, "put", mock_update)
+
+  response = test_app.put("/users/1", data=json.dumps(test_update_data))
+  assert response.status_code == 201
+  assert response.json() == test_response_data
+
+def test_invalid_update_user(test_app):
   pass
 
 def test_detete_user(test_app, monkeypatch):
