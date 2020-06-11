@@ -127,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# images
+*/app/id_processing/images
+
+# weights
+*/app/id_processing/weights
+
+# weights
+*/app/id_processing/cascades
+
+# obsolete method file
+src/app/id_processing/id_scan_obs.py
